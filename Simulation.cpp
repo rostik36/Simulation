@@ -42,17 +42,21 @@ void Simulation::physics(){
     for(int i=0;i<nuberofbodies-1;i++){
         for(int j=i+1;j<nuberofbodies;j++){
             
-            /*float forceMagnitude = 6.674e-11 * particles[i].getMass() * particles[j].getMass() / particles[i].distancePaw2(particles[j].getPos()); // G*m1*m2 / r_magnitude^2
-            float accelerationMagnitude_Particle1 = forceMagnitude / particles[i].getMass(); // f_magnitude / m1
-            float accelerationMagnitude_Particle2 = forceMagnitude / particles[j].getMass(); // f_magnitude / m2
-            sf::Vector2f forceDirection = (particles[j].getPos()-particles[i].getPos()).normalize(); // r/|r|  give the direction of the force
-            particles[i].setAcceleration(particles[i].getAcceleration() + accelerationMagnitude_Particle1 * forceDirection); // accelerationMagnitude_Particle1 * forceDirection(in this case acceleration direction)
-            particles[j].setAcceleration(particles[j].getAcceleration() - accelerationMagnitude_Particle2 * forceDirection); // accelerationMagnitude_Particle2 * forceDirection(in this case acceleration direction)
-        */
+
         particles[i].attract(particles[j]);
        }
     }
 }
+/*float forceMagnitude = 6.674e-11 * particles[i].getMass() * particles[j].getMass() / particles[i].distancePaw2(particles[j].getPos()); // G*m1*m2 / r_magnitude^2
+float accelerationMagnitude_Particle1 = forceMagnitude / particles[i].getMass(); // f_magnitude / m1
+float accelerationMagnitude_Particle2 = forceMagnitude / particles[j].getMass(); // f_magnitude / m2
+sf::Vector2f forceDirection = (particles[j].getPos()-particles[i].getPos()).normalize(); // r/|r|  give the direction of the force
+particles[i].setAcceleration(particles[i].getAcceleration() + accelerationMagnitude_Particle1 * forceDirection); // accelerationMagnitude_Particle1 * forceDirection(in this case acceleration direction)
+particles[j].setAcceleration(particles[j].getAcceleration() - accelerationMagnitude_Particle2 * forceDirection); // accelerationMagnitude_Particle2 * forceDirection(in this case acceleration direction)
+*/
+
+
+
 void Simulation::update(){
     for(int i=0;i<nuberofbodies-1;i++){
         for(int j=i+1;j<nuberofbodies;j++){
