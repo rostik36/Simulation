@@ -1,16 +1,19 @@
-//#include <SFML/Graphics.hpp>
-
 #include "Simulation.hpp"
+
+#include <cstdlib> // needed for rand() and srand()
+#include <ctime>   // needed for time()
+
 
 int main()
 {
-    
-    sf::RenderWindow window(sf::VideoMode(1920, 1080), "SFML works!");
-    //sf::CircleShape shape(100.f);
-    //shape.setFillColor(sf::Color::Green);
+    // Seed the random number generator with the current time
+    srand(time(nullptr));
+
+
+    sf::RenderWindow window(sf::VideoMode(1500, 700), "SFML works!");
     Simulation simulation(window);
-    
-    //float pos_x=0.001f;
+    sf::Clock clock; // create a clock object to measure elapsed time
+    window.setPosition(sf::Vector2i(0,0));
     while (window.isOpen())
     {
         sf::Event event;
@@ -21,7 +24,7 @@ int main()
         }
        
 
-        simulation.run();
+        simulation.run(clock.restart().asSeconds());
     }
 
     return 0;

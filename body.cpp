@@ -1,29 +1,42 @@
 #include "body.hpp"
 #include <iostream>
 
-Body::Body(sf::Vector2f pos, float mass,sf::Color color ): pos_(pos), mass_(mass){
-    shape.setRadius(7.f);// = new sf::CircleShape(5.f);
+Body::Body(sf::Vector2f pos, float radius, float mass,sf::Color color ): pos_(pos), radius_(radius), mass_(mass){
+    shape.setOrigin(radius_, radius_);
+    shape.setRadius(radius_);// = new sf::CircleShape(5.f);
     shape.setFillColor(color);
     shape.setPosition(pos_);
-    velocity_ = sf::Vector2f(0,0);
-    acceleration_ = sf::Vector2f(0,0);
+    velocity_ = sf::Vector2f(0.f,0.f);
+    acceleration_ = sf::Vector2f(0.f,0.f);
 }
-
 
 
 void Body::draw(sf::RenderTarget& target, sf::RenderStates states) const  {
     target.draw(shape, states);
 }
 
+
 void Body::setPos(sf::Vector2f pos) {
   pos_ = pos;
-
   shape.setPosition(pos_);
 }
 
-void Body::run() {
-    velocity_+=acceleration_;//(particles[i].getVelocity()+particles[i].getAcceleration());
-    setPos(pos_+velocity_);
+
+void Body::run(float sec) {
+    velocity_ += acceleration_*sec;//(particles[i].getVelocity()+particles[i].getAcceleration());
+    setPos(pos_ + velocity_*sec); 
+
+    /*if(shape.getFillColor() == sf::Color::Green){
+        std::cout<<"acc :";
+        std::cout<<acceleration_.x<<","<<acceleration_.y;
+        std::cout<<"\n";
+        std::cout<<"vec :";
+        std::cout<<velocity_.x<<","<<velocity_.y;
+        std::cout<<"\n";
+        std::cout<<"pos :";
+        std::cout<<pos_.x<<","<<pos_.y;
+        std::cout<<"\n";
+    }*/
 }
 
 
@@ -39,10 +52,10 @@ void Body::attract(Body& body){
 
 void Body::elasticCollision(Body& body){
         // calculate the unit normal and unit tangent vectors
-        sf::Vector2f n = sf::Vector2f(pos_ - body.getPos()).normalize();
-        sf::Vector2f t = sf::Vector2f(-n.y, n.x);
-        //std::cout <<n.x;
-        //std::cout <<n.y;
+        // creating new "grid" with new center and y, x axis directions
+        sf::Vector2f n = sf::Vector2f(pos_ - body.getPos()).normalize(); // direction vector  -  from one body to another
+        sf::Vector2f t = sf::Vector2f(-n.y, n.x);                        // vector perpendicular to direction vector
+        
         // calculate the initial velocities in the normal and tangent directions
         float v1n = dot(velocity_, n);
         float v1t = dot(velocity_, t);
@@ -58,21 +71,19 @@ void Body::elasticCollision(Body& body){
         // set the final velocities for the objects
         //velocity_ = sf::Vector2f(0,0);//v1n_final * n + v1t * t;
         //body.setVelocity(sf::Vector2f(0,0));//v2n_final * n + v2t * t);
-        velocity_ = (v1n_final * n + v1t * t)*0.9f;
-        body.setVelocity((v2n_final * n + v2t * t)*0.9f);
+        velocity_new += (v1n_final * n + v1t * t);//*0.f;
+        body.setVelocityNew(body.getVelocityNew()+ (v2n_final * n + v2t * t));//*0.f);
 
 
 
         // reset the position so the object gets right about the edge out of collision..
         // Assume obj1 and obj2 are instances of some class with a position property (e.g. sf::Vector2f)
         // Calculate the center point between the two objects
-        sf::Vector2f center = (pos_ + body.getPos()) / 2.f;
+        /*sf::Vector2f center = (pos_ + body.getPos()) / 2.f;
 
         // Calculate the direction from obj1 to obj2
-        sf::Vector2f direction = body.getPos() - pos_;
-        float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
-        direction /= length; // Normalize the direction vector
-
+        sf::Vector2f direction = (body.getPos() - pos_).normalize();
+        
         // Calculate the new positions for obj1 and obj2
         float distance = (getRadius()+body.getRadius() +0.00002f) / 2.f; // Half the desired distance between the objects
         sf::Vector2f new1 = center - direction * distance;
@@ -80,8 +91,26 @@ void Body::elasticCollision(Body& body){
 
         // Set the new positions for obj1 and obj2
         pos_= new1;
-        body.setPos(new2);
+        body.setPos(new2);*/
 }
     // check if the two rectangles are colliding
     //if (rect1.getGlobalBounds().intersects(rect2.getGlobalBounds()))
     //{
+void Body::correct(Body& body){
+    // reset the position so the object gets right about the edge out of collision..
+    // Assume obj1 and obj2 are instances of some class with a position property (e.g. sf::Vector2f)
+    // Calculate the center point between the two objects
+    sf::Vector2f center = (pos_ + body.getPos()) / 2.f;
+
+    // Calculate the direction from obj1 to obj2
+    sf::Vector2f direction = (body.getPos() - pos_).normalize();
+    
+    // Calculate the new positions for obj1 and obj2
+    float distance = (getRadius()+body.getRadius() +0.00002f) / 2.f; // Half the desired distance between the objects
+    sf::Vector2f new1 = center - direction * distance;
+    sf::Vector2f new2 = center + direction * distance;
+
+    // Set the new positions for obj1 and obj2
+    pos_= new1;
+    body.setPos(new2);
+}

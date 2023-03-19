@@ -1,17 +1,30 @@
 //#pragma once
-
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/RenderStates.hpp>
+#include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics/Drawable.hpp>
 
 #include <cmath>
 
 
 class Body : public sf::Drawable{
     public:
-    
-    Body(sf::Vector2f pos = sf::Vector2f(0, 0), float mass = 0.f,sf::Color color = sf::Color::Green );
+    bool isInCollisionN = false;
+    bool isInCollision[50] = {false};
+    bool isInCollisionLeftEdge = false;
+    bool isInCollisionRightEdge = false;
+    bool isInCollisionTopEdge = false;
+    bool isInCollisionBottomEdge = false;
+
+    Body(sf::Vector2f pos = sf::Vector2f(0, 0), float radius = 0, float mass = 0.f,sf::Color color = sf::Color::Green );
 
     void setPosition(sf::Vector2f pos);
-    void run();
+    void run(float sec);
+
+
+    sf::CircleShape getShape() {
+        return shape;
+    }
 
     sf::Vector2f& getPos()  {
         return pos_;
@@ -32,6 +45,12 @@ class Body : public sf::Drawable{
     }
     void setVelocity(sf::Vector2f velocity) {
         velocity_ = velocity;
+    }
+    sf::Vector2f getVelocityNew()  {
+        return velocity_new;
+    }
+    void setVelocityNew(sf::Vector2f velocity) {
+        velocity_new = velocity;
     }
     sf::Vector2f getAcceleration()  {
         return acceleration_;
@@ -75,12 +94,20 @@ class Body : public sf::Drawable{
     //(m1*v1^2+m2*v2^2 -m2*(v1-v2 + u1)^2 ) / m1 = u1^2
     void elasticCollision(Body& body);
 
+    void correct(Body& body);
+
     private:
+    
     sf::Vector2f pos_;
     sf::Vector2f velocity_;
+    sf::Vector2f velocity_new;
     sf::Vector2f acceleration_;
+    float radius_;
     float mass_;
     sf::CircleShape shape;
+
+
+
 
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
     
