@@ -45,7 +45,7 @@ Simulation::Simulation(sf::RenderWindow& window) : window_(window) {
     for (size_t i = 1; i < nuberofbodies; i++)
     {
         //particles[i] = Particle(sf::Vector2f( 250+i*35 , 443.3f ), 1.f, sf::Color::Red);
-        particles[i] = Particle(sf::Vector2f( left + 5 + static_cast<int>(clock1.getElapsedTime().asSeconds()*50000*11*i)%(width-left -5),  top + 5 + static_cast<int>(clock1.getElapsedTime().asSeconds()*50000*19*i)%(height - top -5) ), 1.f, sf::Color::Green);
+        particles[i] = Particle(sf::Vector2f( left + 5 + static_cast<int>(clock1.getElapsedTime().asSeconds()*50000*11*i)%(400 -5),  top + 5 + static_cast<int>(clock1.getElapsedTime().asSeconds()*50000*19*i)%(height - top -5) ), 1.f, sf::Color::Green);
         particles[i].setVelocity(sf::Vector2f(50.f,0));
     }
     particles[0] = Particle(sf::Vector2f( 350 , 443.3f ), 1.f, sf::Color::Red);
@@ -72,7 +72,7 @@ void Simulation::run(float sec)
 
     for (size_t i = 0; i < counterOfBounce; i++)
     {
-        window_.draw(normalLines[i]);
+        //window_.draw(normalLines[i]);
         //window_.draw(bounceLines[i]);
         //window_.draw(hittedLines[i]);
     }
@@ -171,9 +171,9 @@ void Simulation::update(float sec){
                         sf::Vector2f dir = (*lines[j]).getPoint2()-(*lines[j]).getPoint1();
                         dirVecToClosestPoint = sf::Vector2f(-dir.y, dir.x);
                         minMagVec = tempNormPow2;
-                        //std::cout<<i<<"\n";
-                        hittedLines[i] = Line((*lines[j]).getPos(), (*lines[j]).getPoint1(), (*lines[j]).getPoint2(), sf::Color::Red );
-                        hittedLines[i].setPos(hittedLines[i].getPos()+sf::Vector2f(0,10.f));
+                        //std:15:cout<<i<<"\n";
+                        //hittedLines[i] = Line((*lines[j]).getPos(), (*lines[j]).getPoint1(), (*lines[j]).getPoint2(), sf::Color::Red );
+                        //hittedLines[i].setPos(hittedLines[i].getPos()+sf::Vector2f(0,10.f));
                     }
                 }
                 //particles[i].isRun = false;
@@ -246,22 +246,25 @@ void Simulation::boundaries(Particle* particle)
         }
         */
         // in this case teleport the particle to start to left corner..
-        (*particle).setPos( sf::Vector2f(205, 200+ rand_float(500)) );
-        (*particle).setVelocity(sf::Vector2f(50.f,0));
+        (*particle).setPos( sf::Vector2f(top+5, top+ rand_float(height-top-5)) );
+        (*particle).setVelocity(sf::Vector2f(150.f+rand_float(5),0));
     }
     else
         (*particle).isInCollisionRightEdge = false;
 
     if ( (*particle).getPos().y - (*particle).getRadius() <= windowBounds.top)
     {
-        if(!(*particle).isInCollisionTopEdge){
+        /*if(!(*particle).isInCollisionTopEdge){
             //std::cout <<"top";
             sf::Vector2f normal(0.f,-1.f);
             float d = 2.0f * (*particle).getVelocity().dot(normal)/ normal.normPow2();
             (*particle).setVelocity( (*particle).getVelocity() - d * normal);
             (*particle).isInCollisionTopEdge = true;
-        }
+        }*/
 
+        // in this case teleport the particle to start to left corner..
+        (*particle).setPos( sf::Vector2f(top+5, top+ rand_float(height-top-5)) );
+        (*particle).setVelocity(sf::Vector2f(150.f+rand_float(5),0));
     }
     else
         (*particle).isInCollisionTopEdge = false;
@@ -269,16 +272,19 @@ void Simulation::boundaries(Particle* particle)
     
     if (windowBounds.height <= (*particle).getPos().y + (*particle).getRadius())
     {
-        if(!(*particle).isInCollisionBottomEdge){
+        /*if(!(*particle).isInCollisionBottomEdge){
             //std::cout <<"bottom";
             sf::Vector2f normal(0.f,1.f);
             float d = 2.0f * (*particle).getVelocity().dot(normal)/ normal.normPow2();
             (*particle).setVelocity( (*particle).getVelocity() - d * normal);
             (*particle).isInCollisionBottomEdge = true;
-        }
+        }*/
         //std::cout<<"vec :";
         //std::cout<<body.getVelocity().x<<","<<body.getVelocity().y;
         //std::cout<<"\n";
+        // in this case teleport the particle to start to left corner..
+        (*particle).setPos( sf::Vector2f(top+5, top+ rand_float(height-top-5)) );
+        (*particle).setVelocity(sf::Vector2f(150.f+rand_float(5),0));
     }
     else
         (*particle).isInCollisionBottomEdge = false;
