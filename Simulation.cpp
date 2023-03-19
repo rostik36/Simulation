@@ -28,7 +28,7 @@ std::vector<sf::Vector2f> Simulation::loadWindCords(char* name){
     }
     else
     {
-        std::cout << "Error: could not open file." << std::endl;
+        //std::cout << "Error: could not open file." << std::endl;
     }
 
     return coords;
@@ -37,19 +37,44 @@ std::vector<sf::Vector2f> Simulation::loadWindCords(char* name){
 
 Simulation::Simulation(sf::RenderWindow& window) : window_(window) {
     
-    std::vector<sf::Vector2f> cords = loadWindCords("wing.txt");
+    std::vector<sf::Vector2f> cords = loadWindCords("wing3.txt");
 
-    wing = Wing(sf::Vector2f(550, 400), cords, 900.f, sf::Color::Red);
+    wing = Wing(sf::Vector2f(750, 400), cords, 700.f, sf::Color::Red);
     sf::Clock clock1;
+
+    particles = new Particle[nuberofbodies];
+
+
+    particles[0] = Particle(sf::Vector2f( 350 , 443.3f ), 1.f, sf::Color::Red);
+    particles[0].setVelocity(sf::Vector2f(150.f,0));
+
 
     for (size_t i = 1; i < nuberofbodies; i++)
     {
+        /*sf::Vector2f tempGenerated;
+        bool isAtLeastCollidingWithOneParticle = false;
+        do{
+            isAtLeastCollidingWithOneParticle = false;
+            for (size_t j = 0; j < i; j++)
+            {
+                tempGenerated = sf::Vector2f( left + 5 + static_cast<int>(clock1.getElapsedTime().asSeconds()*50000*11*i)%(800 -5),  top + 5 + static_cast<int>(clock1.getElapsedTime().asSeconds()*50000*19*i)%(height - top -5) );
+                if( (tempGenerated-particles[j].getPos()).normPow2() <= collisionWithOtherParticleDistancePow2 ){
+                    isAtLeastCollidingWithOneParticle = true;
+                    break;
+                }
+            }
+        
+        }while(isAtLeastCollidingWithOneParticle); // if the position that generated is collides with particle
+        // loop again to generate new one*/
+
+        sf::Vector2f tempGenerated = generatePosNotColliding(left+5, top+5, width-5, height-5, i);
+
         //particles[i] = Particle(sf::Vector2f( 250+i*35 , 443.3f ), 1.f, sf::Color::Red);
-        particles[i] = Particle(sf::Vector2f( left + 5 + static_cast<int>(clock1.getElapsedTime().asSeconds()*50000*11*i)%(400 -5),  top + 5 + static_cast<int>(clock1.getElapsedTime().asSeconds()*50000*19*i)%(height - top -5) ), 1.f, sf::Color::Green);
-        particles[i].setVelocity(sf::Vector2f(50.f,0));
+        particles[i] = Particle( tempGenerated, 1.f, sf::Color::Green, nuberofbodies);
+        particles[i].setVelocity(sf::Vector2f(150.f,0));
+
     }
-    particles[0] = Particle(sf::Vector2f( 350 , 443.3f ), 1.f, sf::Color::Red);
-    particles[0].setVelocity(sf::Vector2f(40.f,0));
+    
 
 
     //testLine = Line(sf::Vector2f(200,400), sf::Vector2f(-1,1), sf::Vector2f(1,-1), 1500, sf::Color::White);
@@ -83,7 +108,7 @@ void Simulation::run(float sec)
 
 void Simulation::physics(){
     // zero acceleration to recalculate the new ones..
-    /*for(int i=0;i<nuberofbodies;i++){
+    for(int i=0;i<nuberofbodies;i++){
         particles[i].setAcceleration(sf::Vector2f(0.f,0.f));
     }
 
@@ -92,7 +117,7 @@ void Simulation::physics(){
         for(int j=i+1;j<nuberofbodies;j++){
             particles[i].attract(particles[j]);
         }
-    }*/
+    }
 }
 
 
@@ -222,13 +247,13 @@ void Simulation::boundaries(Particle* particle)
 {
     if( (*particle).getPos().x - (*particle).getRadius() <= windowBounds.left ){
         if(!(*particle).isInCollisionLeftEdge){
-            std::cout <<"left\n";
+            //std::cout <<"left\n";
             sf::Vector2f normal(1.f,0);
             float d = 2.0f * (*particle).getVelocity().dot(normal)/ normal.normPow2();
             (*particle).setVelocity( (*particle).getVelocity() + d * normal);
             (*particle).isInCollisionLeftEdge = true;
             sf::Vector2f fin = (*particle).getVelocity() + d * normal;
-            std::cout <<fin.x<<","<<fin.y<<"\n\n";
+            //std::cout <<fin.x<<","<<fin.y<<"\n\n";
         }
         
     }
@@ -246,25 +271,27 @@ void Simulation::boundaries(Particle* particle)
         }
         */
         // in this case teleport the particle to start to left corner..
-        (*particle).setPos( sf::Vector2f(top+5, top+ rand_float(height-top-5)) );
-        (*particle).setVelocity(sf::Vector2f(150.f+rand_float(5),0));
+        sf::Vector2f tempGenerated = generatePosNotColliding(left+5, top+5, left+5+200, height-5, nuberofbodies);
+        (*particle).setPos( tempGenerated );
+        (*particle).setVelocity(sf::Vector2f(speed+rand_float(5),0));
     }
     else
         (*particle).isInCollisionRightEdge = false;
 
     if ( (*particle).getPos().y - (*particle).getRadius() <= windowBounds.top)
     {
-        /*if(!(*particle).isInCollisionTopEdge){
+        if(!(*particle).isInCollisionTopEdge){
             //std::cout <<"top";
             sf::Vector2f normal(0.f,-1.f);
             float d = 2.0f * (*particle).getVelocity().dot(normal)/ normal.normPow2();
             (*particle).setVelocity( (*particle).getVelocity() - d * normal);
             (*particle).isInCollisionTopEdge = true;
-        }*/
+        }
 
         // in this case teleport the particle to start to left corner..
-        (*particle).setPos( sf::Vector2f(top+5, top+ rand_float(height-top-5)) );
-        (*particle).setVelocity(sf::Vector2f(150.f+rand_float(5),0));
+        /*sf::Vector2f tempGenerated = generatePosNotColliding(left+5, top+5, left+5+200, height-5, nuberofbodies);
+        (*particle).setPos( tempGenerated );
+        (*particle).setVelocity(sf::Vector2f(speed+rand_float(5),0));*/
     }
     else
         (*particle).isInCollisionTopEdge = false;
@@ -272,19 +299,20 @@ void Simulation::boundaries(Particle* particle)
     
     if (windowBounds.height <= (*particle).getPos().y + (*particle).getRadius())
     {
-        /*if(!(*particle).isInCollisionBottomEdge){
+        if(!(*particle).isInCollisionBottomEdge){
             //std::cout <<"bottom";
             sf::Vector2f normal(0.f,1.f);
             float d = 2.0f * (*particle).getVelocity().dot(normal)/ normal.normPow2();
             (*particle).setVelocity( (*particle).getVelocity() - d * normal);
             (*particle).isInCollisionBottomEdge = true;
-        }*/
+        }
         //std::cout<<"vec :";
         //std::cout<<body.getVelocity().x<<","<<body.getVelocity().y;
         //std::cout<<"\n";
         // in this case teleport the particle to start to left corner..
-        (*particle).setPos( sf::Vector2f(top+5, top+ rand_float(height-top-5)) );
-        (*particle).setVelocity(sf::Vector2f(150.f+rand_float(5),0));
+        /*sf::Vector2f tempGenerated = generatePosNotColliding(left+5, top+5, left+5+200, height-5, nuberofbodies);
+        (*particle).setPos( tempGenerated );
+        (*particle).setVelocity(sf::Vector2f(speed+rand_float(5),0));*/
     }
     else
         (*particle).isInCollisionBottomEdge = false;
@@ -300,6 +328,33 @@ float Simulation::rand_float(float maxValue) {
     
     return rand_float;
 }
+
+
+sf::Vector2f Simulation::generatePosNotColliding(float left, float top, float width, float height, int numberOfParticles = nuberofbodies){
+    sf::Vector2f tempGenerated;
+    bool isAtLeastCollidingWithOneParticle = false;
+
+    numberOfParticles = numberOfParticles == 20000 ? nuberofbodies : numberOfParticles;
+    do{
+        isAtLeastCollidingWithOneParticle = false;
+        for (size_t j = 0; j < nuberofbodies; j++)
+        {
+            tempGenerated = sf::Vector2f( left + rand_float(width - left),  top + rand_float(height - top) );
+            if( (tempGenerated-particles[j].getPos()).normPow2() <= collisionWithOtherParticleDistancePow2 ){
+                isAtLeastCollidingWithOneParticle = true;
+                break;
+            }
+        }
+    
+    }while(isAtLeastCollidingWithOneParticle); // if the position that generated is collides with particle
+    // loop again to generate new one
+
+    return tempGenerated;
+}
+
+
+
+
 
 
 Simulation::~Simulation()

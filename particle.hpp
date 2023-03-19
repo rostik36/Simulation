@@ -16,14 +16,14 @@ class Particle : public sf::Drawable{
     public:
     bool isRun = true;
     bool isInCollisionN = false;
-    bool isInCollision[700] = {false};
+    bool* isInCollision;//[2000] = {false};
     bool isInCollisionLeftEdge = false;
     bool isInCollisionRightEdge = false;
     bool isInCollisionTopEdge = false;
     bool isInCollisionBottomEdge = false;
 
     
-    Particle(sf::Vector2f pos = sf::Vector2f(0, 0), float mass = 0.f,sf::Color color = sf::Color::Green );
+    Particle(sf::Vector2f pos = sf::Vector2f(0, 0), float mass = 0.f,sf::Color color = sf::Color::Green, int numberOfParticles = 0 );
 
     void setPosition(sf::Vector2f pos);
     void run(float sec);

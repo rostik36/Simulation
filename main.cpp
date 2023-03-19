@@ -10,7 +10,7 @@ int main()
     srand(time(nullptr));
 
 
-    sf::RenderWindow window(sf::VideoMode(1500, 700), "SFML works!");
+    sf::RenderWindow window(sf::VideoMode(1920, 1080), "SFML works!");
     Simulation simulation(window);
     sf::Clock clock; // create a clock object to measure elapsed time
     window.setPosition(sf::Vector2i(0,0));

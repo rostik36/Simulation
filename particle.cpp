@@ -3,8 +3,16 @@
 #include <iostream>
 
 
-Particle::Particle(sf::Vector2f pos, float mass,sf::Color color ): pos_(pos), mass_(mass){
+Particle::Particle(sf::Vector2f pos, float mass,sf::Color color, int numberOfParticles ): pos_(pos), mass_(mass){
     //shape.setOrigin(radius_, radius_);
+
+    isInCollision = new bool[numberOfParticles];
+    for (size_t i = 0; i < numberOfParticles; i++)
+    {
+        isInCollision[i] = false;
+    }
+    
+
     shape = sf::RectangleShape(sf::Vector2f(3.f,3.f));
     //radius_ = 3;
     //radiusPow2 = radius_*radius_;

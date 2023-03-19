@@ -8,7 +8,7 @@
 #include "line.hpp"
 //#include "body.hpp"
 
-#define nuberofbodies 700
+#define nuberofbodies 2500
 
 
 
@@ -18,7 +18,7 @@ private:
     sf::RenderWindow& window_;
     sf::FloatRect windowBounds;
     Wing wing;
-    Particle particles[nuberofbodies];
+    Particle* particles;//[nuberofbodies];
     /*Line normalLines[nuberofbodies];
     Line hittedLines[nuberofbodies];
     Line bounceLines[nuberofbodies];*/
@@ -27,12 +27,13 @@ public:
     //float minMagVec = 90000000.f; // if we will take the norm of diagonal vector of the window this norm will be less than 90000000.f  so we defined upper boundary
     int counterOfBounce = 0;
 
-        
     // simulation frame 
-    int left = 200;
-    int width = 1300;
-    int top = 200;
-    int height = 700;
+    int left = 50;
+    int width = 1700;
+    int top = 100;
+    int height = 900;
+
+    float speed = 150;
 
 
     Simulation(sf::RenderWindow& window);/* args */
@@ -44,6 +45,7 @@ public:
     void boundaries(Particle* particle);
 
     float rand_float(float maxValue);
+    sf::Vector2f generatePosNotColliding(float left, float top, float width, float height, int numberOfParticles);
 
     ~Simulation();
 };
