@@ -69,7 +69,7 @@ Simulation::Simulation(sf::RenderWindow& window) : window_(window) {
         }while(isAtLeastCollidingWithOneParticle); // if the position that generated is collides with particle
         // loop again to generate new one*/
 
-        sf::Vector2f tempGenerated = generatePosNotColliding(left+5, top+5, width-5, height-5, i); // generate position for particle that is not collides with others
+        sf::Vector2f tempGenerated = generatePosNotColliding(left+5, top+5, width-5, height-5, i+1); // generate position for particle that is not collides with others
 
         particles[i] = Particle( tempGenerated, 1.f, sf::Color::Green, nuberofbodies);
         particles[i].setVelocity(sf::Vector2f(150.f,0));
@@ -228,6 +228,7 @@ void Simulation::update(float sec){
 }
 
 
+
 void Simulation::boundaries(Particle* particle)
 {
     if( (*particle).getPos().x - (*particle).getRadius() <= windowBounds.left ){
@@ -319,15 +320,17 @@ sf::Vector2f Simulation::generatePosNotColliding(float left, float top, float wi
     sf::Vector2f tempGenerated;
     bool isAtLeastCollidingWithOneParticle = false;
 
-    numberOfParticles = numberOfParticles == 20000 ? nuberofbodies : numberOfParticles;
+    numberOfParticles = numberOfParticles == nuberofbodies ? nuberofbodies : numberOfParticles; // check if the input is the full number of particle or if we in the simulation constructor up to the initrd particles
     do{
         isAtLeastCollidingWithOneParticle = false;
-        for (size_t j = 0; j < nuberofbodies; j++)
+        tempGenerated = sf::Vector2f( left + rand_float(width - left),  top + rand_float(height - top) ); // initrd position
+
+        // check for all the particles if there is any hit.. if so loop outer loop again to generate new position
+        for (size_t j = 0; j < numberOfParticles; j++)
         {
-            tempGenerated = sf::Vector2f( left + rand_float(width - left),  top + rand_float(height - top) );
             if( (tempGenerated-particles[j].getPos()).normPow2() <= collisionWithOtherParticleDistancePow2 ){
                 isAtLeastCollidingWithOneParticle = true;
-                break;
+                break; // found particle to near to new generated position so break the for loop no need to check the rest, generate new position
             }
         }
     
