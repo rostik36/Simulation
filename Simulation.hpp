@@ -6,23 +6,14 @@
 #include "wing.hpp"
 #include "particle.hpp"
 #include "line.hpp"
-//#include "body.hpp"
+
+
 
 #define nuberofbodies 2500
 
 
-
 class Simulation
 {
-private:
-    sf::RenderWindow& window_;
-    sf::FloatRect windowBounds;
-    Wing wing;
-    Particle* particles;//[nuberofbodies];
-    /*Line normalLines[nuberofbodies];
-    Line hittedLines[nuberofbodies];
-    Line bounceLines[nuberofbodies];*/
-
 public:
     //float minMagVec = 90000000.f; // if we will take the norm of diagonal vector of the window this norm will be less than 90000000.f  so we defined upper boundary
     int counterOfBounce = 0;
@@ -36,7 +27,7 @@ public:
     float speed = 150;
 
 
-    Simulation(sf::RenderWindow& window);/* args */
+    Simulation(sf::RenderWindow& window);
     std::vector<sf::Vector2f> loadWindCords(char* name);
     void run(float sec);
     void physics();
@@ -48,6 +39,19 @@ public:
     sf::Vector2f generatePosNotColliding(float left, float top, float width, float height, int numberOfParticles);
 
     ~Simulation();
+
+
+private:
+    sf::RenderWindow& window_;
+    sf::FloatRect windowBounds;
+    Wing* wing;
+    Particle* particles;
+    
+    //[nuberofbodies];
+    /*Line normalLines[nuberofbodies];
+    Line hittedLines[nuberofbodies];
+    Line bounceLines[nuberofbodies];*/
+
 };
 
 #endif // SIMULATION_HPP
