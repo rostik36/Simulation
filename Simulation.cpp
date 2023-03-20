@@ -86,19 +86,18 @@ void Simulation::run(float sec)
     update(sec);
     //physics();
 
+
     window_.clear();
-
     window_.draw(*wing);
-
     for(size_t i=0;i<nuberofbodies;i++)
         window_.draw(particles[i]);
 
-    for (size_t i = 0; i < counterOfBounce; i++)
+    /*for (size_t i = 0; i < counterOfBounce; i++)
     {
-        //window_.draw(normalLines[i]);
-        //window_.draw(bounceLines[i]);
-        //window_.draw(hittedLines[i]);
-    }
+        window_.draw(normalLines[i]);
+        window_.draw(bounceLines[i]);
+        window_.draw(hittedLines[i]);
+    }*/
     
     window_.display();
 }
@@ -204,17 +203,12 @@ void Simulation::update(float sec){
                 //std::cout<<i<<">> bounce of line: ("<<hittedLines[i].getPoint1().x<<","<<hittedLines[i].getPoint1().y<<") --- ("<<hittedLines[i].getPoint2().x<<","<<hittedLines[i].getPoint2().y<<")\n\n";
             
                 //std::cout<<"dir: "<<dirVecToClosestPoint.x<<","<<dirVecToClosestPoint.y<<"\n";
-                /*float d = 2.0f * particles[i].getVelocity().dot(dirVecToClosestPoint.normalize());  /// dirVecToClosestPoint.dot(dirVecToClosestPoint);
-                sf::Vector2f bounceVec = particles[i].getVelocity() - d * dirVecToClosestPoint.normalize();
-                particles[i].setVelocity( bounceVec);*/
-                particles[i].setVelocity( particles[i].getVelocity().reflect(dirVecToClosestPoint.normalize()));
+                particles[i].setVelocity( particles[i].getVelocity().reflect(dirVecToClosestPoint.normalize()) );
 
-                //sf::Vector2f dir = lines[j].getPoint2()-lines[j].getPoint1();
-                /*sf::Vector2f ferlected = particles[i].getVelocity().reflect(dirVecToClosestPoint);
-
+                /*//sf::Vector2f dir = lines[j].getPoint2()-lines[j].getPoint1();
+                sf::Vector2f ferlected = particles[i].getVelocity().reflect(dirVecToClosestPoint);
                 Line normal( (particles[i].getPos()+ particles[i].getPos()+(50.f*dirVecToClosestPoint))/2.f, particles[i].getPos()+(50.f*dirVecToClosestPoint), particles[i].getPos(), sf::Color::White, false );
                 normalLines[counterOfBounce] = normal;
-
                 Line reflectedd( (particles[i].getPos()+ particles[i].getPos()+(50.f*ferlected))/2.f, particles[i].getPos()+(50.f*ferlected), particles[i].getPos(), sf::Color::Cyan, false );
                 bounceLines[counterOfBounce++] = reflectedd;  //particles[i].isInCollisionLeftEdge = true;
                 */
@@ -231,13 +225,6 @@ void Simulation::update(float sec){
         // move the body based on calculated variables
         particles[i].run(sec);
     }
-    
-    /*for(int i=0;i<nuberofbodies;i++){
-        boundaries(particles[i]);
-        //if(particles[i].isRun)
-            
-            
-    }*/
 }
 
 
