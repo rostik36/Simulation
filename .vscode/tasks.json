@@ -15,7 +15,8 @@
                 "${fileDirname}\\*.cpp",
                 "${fileDirname}\\*.hpp",
                 "-o",
-                "${fileDirname}\\${fileBasenameNoExtension}.exe",
+                "${fileDirname}\\output\\main.exe",
+                //"${fileDirname}\\${fileBasenameNoExtension}.exe",
                 "-lsfml-graphics",
                 "-lsfml-window",
                 "-lsfml-system"
@@ -44,7 +45,7 @@
                 "${fileDirname}\\*.cpp",
                 "${fileDirname}\\*.hpp",
                 "-o",
-                "${fileDirname}\\main.exe",
+                "${fileDirname}\\output\\main.exe",
                 "-lsfml-graphics",
                 "-lsfml-window",
                 "-lsfml-system"

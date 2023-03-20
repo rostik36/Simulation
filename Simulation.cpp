@@ -6,7 +6,7 @@
 #include <sstream>
 
 std::vector<sf::Vector2f> Simulation::loadWindCords(char* name){
-    std::string filePath = "C:\\Users\\Ros\\Desktop\\simulation\\";
+    std::string filePath = "C:\\Users\\Ros\\Desktop\\simulation\\wings\\";
     filePath += name;
     std::ifstream file(filePath);
     std::vector<sf::Vector2f> coords;
