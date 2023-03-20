@@ -1,5 +1,4 @@
 
-#include "line.hpp"
 #include "Simulation.hpp"
 #include <iostream>
 #include <fstream>
@@ -36,13 +35,16 @@ std::vector<sf::Vector2f> Simulation::loadWindCords(char* name){
 
 
 Simulation::Simulation(sf::RenderWindow& window) : window_(window) {
+    sf::Clock clock1; // clock used to init particles in random places
+
+    std::vector<sf::Vector2f> cords = loadWindCords("wing3.txt"); // load the coordinates of the wing..
+
+
+    wing = new Wing(sf::Vector2f(750, 400), cords, 700.f, sf::Color::Red); // create the wing
     
-    std::vector<sf::Vector2f> cords = loadWindCords("wing3.txt");
 
-    wing = Wing(sf::Vector2f(750, 400), cords, 700.f, sf::Color::Red);
-    sf::Clock clock1;
 
-    particles = new Particle[nuberofbodies];
+    particles = new Particle[nuberofbodies]; // allocate memory for array
 
 
     particles[0] = Particle(sf::Vector2f( 350 , 443.3f ), 1.f, sf::Color::Red);
@@ -67,21 +69,17 @@ Simulation::Simulation(sf::RenderWindow& window) : window_(window) {
         }while(isAtLeastCollidingWithOneParticle); // if the position that generated is collides with particle
         // loop again to generate new one*/
 
-        sf::Vector2f tempGenerated = generatePosNotColliding(left+5, top+5, width-5, height-5, i);
+        sf::Vector2f tempGenerated = generatePosNotColliding(left+5, top+5, width-5, height-5, i); // generate position for particle that is not collides with others
 
-        //particles[i] = Particle(sf::Vector2f( 250+i*35 , 443.3f ), 1.f, sf::Color::Red);
         particles[i] = Particle( tempGenerated, 1.f, sf::Color::Green, nuberofbodies);
         particles[i].setVelocity(sf::Vector2f(150.f,0));
-
     }
     
-
-
-    //testLine = Line(sf::Vector2f(200,400), sf::Vector2f(-1,1), sf::Vector2f(1,-1), 1500, sf::Color::White);
     // Assuming you have created a window named "window"
     //windowBounds = sf::FloatRect(0-15, 0, window.getSize().x-15, window.getSize().y-132);
     windowBounds = sf::FloatRect(left, top, width, height);
 }
+
 
 void Simulation::run(float sec)
 {
@@ -90,7 +88,7 @@ void Simulation::run(float sec)
 
     window_.clear();
 
-    window_.draw(wing);
+    window_.draw(*wing);
 
     for(size_t i=0;i<nuberofbodies;i++)
         window_.draw(particles[i]);
@@ -164,7 +162,7 @@ void Simulation::update(float sec){
         
         bool isInsideTheShape = false;
         //std::cout<<"initial  "<<isInsideTheShape<<"\n";
-        std::vector<Line*> lines = particles[i].intersects(&wing.getPath(), &isInsideTheShape);
+        std::vector<Line*> lines = particles[i].intersects(&(*wing).getPath(), &isInsideTheShape);
 
         //if(lines.size()>0)
         //    std::cout<<"some line "<< lines.size()<<"\n";
@@ -359,4 +357,6 @@ sf::Vector2f Simulation::generatePosNotColliding(float left, float top, float wi
 
 Simulation::~Simulation()
 {
+    delete[] particles;
+    delete wing;
 }

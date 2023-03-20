@@ -8,7 +8,7 @@
 #include "line.hpp"
 #include <cmath>
 
-static float radius_ = 3;
+static float radius_ = 1.5;
 static float collisionWithOtherParticleDistance = 2*radius_;
 static float collisionWithOtherParticleDistancePow2 = collisionWithOtherParticleDistance*collisionWithOtherParticleDistance;
 
