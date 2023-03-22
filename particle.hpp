@@ -101,7 +101,7 @@ class Particle : public sf::Drawable{
      * @return true - particle inside the wing area
      * @return false - outside
      */
-    std::vector<Line*> intersects(std::vector<Line>* path, bool* isInside);//bool intersects(std::vector<Line>& path);
+    std::vector<Line*> intersects(std::vector<Line*>* path, bool* isInside);//bool intersects(std::vector<Line>& path);
     
     sf::Vector2f vectorToClosestPointOnLine(Line* line);
 

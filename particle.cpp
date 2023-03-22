@@ -64,20 +64,20 @@ void Particle::attract(Particle& body){
 
 
 
-std::vector<Line*> Particle::intersects(std::vector<Line>* path, bool* isInside){ //bool Particle::intersects(std::vector<Line>& path){
+std::vector<Line*> Particle::intersects(std::vector<Line*>* path, bool* isInside){ //bool Particle::intersects(std::vector<Line>& path){
     int intersections = 0;
     std::vector<Line*> lines;
     
     for (size_t i = 0; i < path->size(); i++)
     {
-        if( (*path)[i].getPoint1().x <= pos_.x && pos_.x <= (*path)[i].getPoint2().x ){ // point1.x <= point2.x
+        if( (*(*path)[i]).getPoint1().x <= pos_.x && pos_.x <= (*(*path)[i]).getPoint2().x ){ // point1.x <= point2.x
             /*if( path[i].getPoint1().y <= pos_.y || path[i].getPoint2().y <= pos_.y){ // the particle in under the line
                 intersections++;
                 lines.push_back(path[i]);
             }*/
-            lines.push_back(&(*path)[i]); // on the y axis intersects with this line
+            lines.push_back((*path)[i]); // on the y axis intersects with this line
 
-            float intersect_y = (*path)[i].getSlope()*( pos_.x - (*path)[i].getPoint1().x) + (*path)[i].getPoint1().y;  // y = m( x - x1 ) + y1    <-  y - y1 = m( x - x1 )    one of the line points (x1,y1), m - line slope
+            float intersect_y = (*(*path)[i]).getSlope()*( pos_.x - (*(*path)[i]).getPoint1().x) + (*(*path)[i]).getPoint1().y;  // y = m( x - x1 ) + y1    <-  y - y1 = m( x - x1 )    one of the line points (x1,y1), m - line slope
 
             if(intersect_y <= pos_.y){
                 *isInside=!(*isInside);

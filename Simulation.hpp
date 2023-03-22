@@ -28,7 +28,7 @@ public:
 
 
     Simulation(sf::RenderWindow& window);
-    std::vector<sf::Vector2f> loadWindCords(char* name);
+    std::vector<sf::Vector2f*> loadWindCords(char* name);
     void run(float sec);
     void physics();
     void update(float sec);
@@ -36,7 +36,8 @@ public:
     void boundaries(Particle* particle);
 
     float rand_float(float maxValue);
-    sf::Vector2f generatePosNotColliding(float left, float top, float width, float height, int numberOfParticles);
+    //sf::Vector2f& generatePosNotColliding(float left, float top, float width, float height, int numberOfParticles);
+    sf::Vector2f generatePosNotColliding(float left, float top, float width, float height, int numberOfParticles );
 
     ~Simulation();
 

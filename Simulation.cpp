@@ -4,11 +4,11 @@
 #include <fstream>
 #include <sstream>
 
-std::vector<sf::Vector2f> Simulation::loadWindCords(char* name){
+std::vector<sf::Vector2f*> Simulation::loadWindCords(char* name){
     std::string filePath = "C:\\Users\\Ros\\Desktop\\simulation\\wings\\";
     filePath += name;
     std::ifstream file(filePath);
-    std::vector<sf::Vector2f> coords;
+    std::vector<sf::Vector2f*> coords;
 
     if (file.is_open())
     {
@@ -19,7 +19,7 @@ std::vector<sf::Vector2f> Simulation::loadWindCords(char* name){
             float x, y;
             if (iss >> x >> y)
             {
-                coords.push_back(sf::Vector2f(x, y));
+                coords.push_back(new sf::Vector2f(x, y));
                 std::cout << x <<","<< y <<"'\n";
             }
         }
@@ -37,7 +37,7 @@ std::vector<sf::Vector2f> Simulation::loadWindCords(char* name){
 Simulation::Simulation(sf::RenderWindow& window) : window_(window) {
     sf::Clock clock1; // clock used to init particles in random places
 
-    std::vector<sf::Vector2f> cords = loadWindCords("wing3.txt"); // load the coordinates of the wing..
+    std::vector<sf::Vector2f*> cords = loadWindCords("wing3.txt"); // load the coordinates of the wing..
 
 
     wing = new Wing(sf::Vector2f(750, 400), cords, 700.f, sf::Color::Red); // create the wing
@@ -161,7 +161,7 @@ void Simulation::update(float sec){
         
         bool isInsideTheShape = false;
         //std::cout<<"initial  "<<isInsideTheShape<<"\n";
-        std::vector<Line*> lines = particles[i].intersects(&(*wing).getPath(), &isInsideTheShape);
+        std::vector<Line*> lines = particles[i].intersects((*wing).getPath(), &isInsideTheShape);
 
         //if(lines.size()>0)
         //    std::cout<<"some line "<< lines.size()<<"\n";
